@@ -1,0 +1,1 @@
+console.log("module A started executing");
