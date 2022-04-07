@@ -5,7 +5,7 @@
 ## 3. Module Design Pattern
 ## 4. Designing Simple Modules
 ## 5. Module Augmentation
-## 6. Clonin, Inheritance and Submodules
+## 6. Cloning, Inheritance and Submodules
 ## 7. Base, Sandbox and Core Modules
 ## 8. Application Implementation - Putting It All Together
 ## 9. Modular Application Design and Testing
@@ -39,7 +39,7 @@ const mySingletonObj = () => {
         // privileged method
         getInnerName: function() {
             return this.name;
-        }
+        },
 
         // privileged method
         getTitle: function() {
@@ -421,3 +421,207 @@ Defered loading looks like this:
 ```
 
 ***We parse the HTML file until we get to a script file. We continue parsing and while parsing we load the file. After we are done with parsing the file we run it.***
+
+# 6. Cloning, Inheritance and Submodules
+
+## Using the assingment operator for copying objects
+
+When we are suing primitve types in JavaScript, we can easily use the assignment operator to copy the value of one variable to another, as shown:
+
+```JavaScript
+let a = 5;
+let b = a;
+```
+
+In the preceding code, we are simply assigning the value of one variable to another variable, and there is no mystery here, but how would that work for two objects?
+
+Let's put that to the test as follows:
+
+```JavaScript
+let a = {
+    testValue: 5
+};
+
+let b = a;
+
+a.newValue = 10;
+console.log(b.newValue); // 10
+```
+
+Here, we are assigning ```a``` to ```b``` using the assignment operator, which might appear as creating a new object based on another object.
+
+However, as you can see, when we create a new property for ```a```, even after the assignment of ```a``` to ```b``` has taken place, the new property is available to ```b``` as well.
+
+The reason is that when we use the assignment operator toa ssign the value of a variable which holds a reference to an object to another variable, we are in fact assigning the memory address of the object to another variable. This results in both variables referencing the same object. So, in the code above, both ```a``` and ```b``` are referencing the same object.
+
+## Shallow cloning and deep cloning
+
+***Shallow cloning*** copies all the top-level properties of the original object, but if this object contains other reference types, only the *references* of these reference types are copied to the newly created clone, as opposed to the actual reference types. This type of cloning is used when we want to have separate copies of the primitve types in the new object but we want the original boject and the newly cloned object to share the same reference types.
+
+***Deep cloning*** on the other hand, copies all the primitive type properties of the original object into the new object as well as making new copies of all the reference types of the original object in the new object.
+
+The important distinction is that true copies of the reference types are created in the new object and not just the references ( the memory addresses ) of the reference types. This type of cloning is desirable if we want to have two distinct objects with no ties between them of any kind. Deep cloning is generally considered slower than shallow cloning and consumes more resources.
+
+# 9. Modular Application Design and Testing
+
+## Different types of automated tests
+
+There are many different types of automated tests, but we will consider and talk about only three categories of such tests as listed here:
+
+* Unit testing
+* Integration testing
+* End to end testing
+
+## Unit testing
+
+Unit tests are usually diesnged to test the functionality of individual pieces of our code in isolation. This usually means testing our functions and methods, one at a time, to make sure they do exactly what is expected of them.
+
+We usually write such tests in a manner that can verify the functionality of our methods and individual pieces of our code in various scenarios.
+
+There are two main styles of writing unit tests; **Test Driven Development(TDD)** and **Behavioral Driven Development(BDD)**.
+
+## TDD unit tests
+
+TDD unit testing is mostly used to test the implementation of our code. This is done by testing the actual result that a method produces against what is expected.
+
+The TDD process can be thought of as the following loop, if we write our tests before the code implementation:
+
+1. Write a unit test
+2. Run the test and expect it to fail
+3. Write the code required to make the test pass
+4. Run the test again to make sure the test passes
+5. Re-factor the code if needed
+6. Start from the first step again
+
+As you can see, TDD is meant to be implemented from the beginning of the project and to continue through the project's life cycle.
+
+## BDD unit tests
+
+This style of testing is focused on the expected behavior of our code and not necessarily the implementation of it.
+
+When we use BDD style of writing unit tests, we write our assertions in a way that can be read like a natural sentence.
+
+For instance a test should read as "returns a value that is incremented by 1 from the previous value".
+
+BDD can also follow the same process loop shown in the TDD section.
+
+## TDD versus BDD
+
+Imagine that we have a function which is a counter, and when it is called for the first time, it will return the value 1 and every time after taht, it will return the previous counter value plus 1.
+
+The TDD style of writing unit tests, we test that our function is initialized with the default value ( start value ) of zero, since that is tied with the very first time that the function is called.
+
+This detail ( that the start value is 0 ) is an implementation aspect and TDD style of writing tests checks for such implementation details. It also means that if we decide the default value ( start value ) in our counter function should change to 2, our test case also needs to change accordingly.
+
+In BDD style of writing unit tests, we don't check to see what the returned value is when the function is called for the very first time. We only check to see that every time the function is called the counter has been incremented by 1. This means that if we change the start value of the function at some later time, it has no effect on the expected behavior of the function. Our function should always increment the previous value by 1, regardless of the starting value.
+
+The difference between TDD and BDD is very sbutle but important to keep in mind.
+
+## Test coverage
+
+It is ideal to write enough unit tests to achieve 100 percent test coverage for our code. However, in reality, it is not always possible to write unit tests for every aspect of the code.
+
+Of course, the more tests we write, the better the code quality we can expect, but time lines also need to be kept in mind for every project. In reality, we do not always have sufficient time to achieve the full coverage of our code base with unit tests. However, we should keep in mind that in the long run, we save more time on finding and fixing bugs when we have more code coverage with our tests.
+
+## Integration testing
+
+This type of testing is mainly focused on mkaing sure that different pieces of the application can work together properly.
+
+When different methods and modules are involved to provide a certain functionality, we want to test and see if the deisred functionality has been achieved by the sum of collaboration among such pieces.
+
+An example could be that one function reads a string from a file and passes it to another function, which creates an array based on the comma delimiter in the string. Our integration test will make sure that the correct array was produced based on these two functions working together to read and process the string.
+
+## End to end testing
+
+These tests usually check the flow of the application's functionality from the start to finish to make sure that the application as a whole is working properly and as intended.
+
+For instance, to test the correct behavior of the application based on the form submission on a page, we can submit the form value to the server using an AJAX call, get the results from the server and then refresh the content area of the application based on the returned values. By examining the final result, we can be sure that our application behaves as expected.
+
+***End to end*** ( also known as ***E2E*** ) testing is usually done after our unit tests and integration tests have passed.
+
+# 10. Enterprise Grade Modular Design, AMD, CommonJS and ES6 Modules
+
+## Introducting Asynchronous Module Definition
+
+**Asynchronous Module Definition (AMD)** format for creating modules in JavaScript, is targeted for use in browsers. This format proposes a particular way for defining modules so that modules and their dependencies can be loaded into the browser asynchronously.
+
+There are two key methods that you need to use when creating and consuming AMD modules, these are ```define``` and ```require``` methods.
+
+The idea is that we create a mdoule using the global ```define``` method and then we can import that module in other parts of the code ( other modules ) using the global ```require``` method.
+
+#### Defining modules using AMD format
+
+Here is how a module can be defined in AMD format:
+
+```JavaScript
+define("moduleOneId", ["dependency"], (dependency) => {
+    return {
+        sayHi: () => {
+            console.log("Hello");
+        }
+    }
+});
+```
+
+The first argument, ```moduleOneId```, is an optional parameter which assigns and ID to the module. Most of the time, we do not use this argument and other than some edge cases or when a non-MAD concatenation tool is being used to bundle our code, we leave it empty.
+
+The second argument to ```define``` function is an array of dependencies, which tells the AMD mdoule loader what modules ( files ) need to be loaded before executing the callback funciton. Of course, the third argument passed to ```define``` method is the callback function.
+
+Notice that we are returning an object from this callback function. This object is the module that we are defining. In AMD format, the callback function can also return constructors and functions.
+
+### Importing AMD modules
+
+To use the module that we have defined in the preceding code, we can import it by using the global ```require``` function. 
+
+Consider the following:
+
+```JavaScript
+require(["moduleOneId"], (moduleOne) => {
+    moduleOne.sayHi();
+});
+```
+
+Here, we are asking the AMD module loader to load the dependency ```moduleOneId``` before executing the callback function.
+
+Note that we could also use the path to our dependency instead of using the related ID. For instance, we would write the preceding code snippet as follows:
+
+```JavaScript
+require(["folderPath/moduleOne.js"], (moduleOne) => {
+    moduleOne.sayHi();
+});
+```
+
+AMD format provides great flexibility in defining and loading our modules. It also eliminates the need for creating global variables to define the modules. AMD-compatbile script loaders also often provide the capability to lazy-load our mdoules, if needed.
+
+There are many web development tools ( libraries ) that support AMD format, but the most popular ones are ```RequireJS``` and ```curl.js```.
+
+## CommonJS
+
+As with AMD format, CommonJS ( also known as CJS ) is another format which defines JavaScript modules as objects that can be amde available to any dependent code. CJS modules can only define objects, as opposed to AMD modules, which can define constructors and functions too.
+
+Unlike AMD format, which takes a browser-first approach, CommonJS takes a server-first approach. It also covers a broader set of concerns which are server-realted, suhc as io, file system and alike.
+
+Many developers use AMD format for browser-targeted modules and CommonJS for server-side targeted modules. However, you could use CJS format for browsers modules as well.
+
+Some of the tools that support CJS for the browsers are ```curl.js``` and ```SproutCore```.
+
+#### Implementing a CommonJS module
+
+Imagine that we have a file called ```moduleOne.js```. From inside this file, we can export a CJS module like so:
+
+```JavaScript
+exports.someFunc = () => {
+    return console.log("I am some function");
+}
+```
+
+Here, ```exports``` is a global variable and contains the object which the module is making available to other modules that wish to consume it.
+
+On the other hand, imagine that we have another module in ```moduleTwo.js``` file, which resides in the same directory as ```moduleOne.js```
+
+```moduleTwo.js``` can import ```moduleOne``` and consume it like so:
+
+```JavaScript
+const module = require("./defineModule");
+module.someFunction();
+```
