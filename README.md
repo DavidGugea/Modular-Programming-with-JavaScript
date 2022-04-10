@@ -625,3 +625,97 @@ On the other hand, imagine that we have another module in ```moduleTwo.js``` fil
 const module = require("./defineModule");
 module.someFunction();
 ```
+
+## ES6 Modules
+
+With ES6 modules, the ```import``` and ```export``` statements were introduced.
+
+#### ```Export```
+
+In order to export variables, functions, classes, etc. from a module you must use the ```export``` statement.
+There are two types of exports:
+
+* Named exports ( none or many )
+* Default exports ( none or one )
+
+The difference between named and defualt exports can only be seen when you import.
+
+Here is the general syntax for ```export```:
+
+```JavaScript
+// Exporting individual features
+export let name1, name2, …, nameN; // also var, const
+export let name1 = …, name2 = …, …, nameN; // also var, const
+export function functionName(){...}
+export class ClassName {...}
+
+// Export list
+export { name1, name2, …, nameN };
+
+// Renaming exports
+export { variable1 as name1, variable2 as name2, …, nameN };
+
+// Exporting destructured assignments with renaming
+export const { name1, name2: bar } = o;
+
+// Default exports
+export default expression;
+export default function (…) { … } // also class, function*
+export default function name1(…) { … } // also class, function*
+export { name1 as default, … };
+
+// Aggregating modules
+export * from …; // does not set the default export
+export * as name1 from …; // ECMAScript® 2O20
+export { name1, name2, …, nameN } from …;
+export { import1 as name1, import2 as name2, …, nameN } from …;
+export { default, … } from …;
+```
+
+You can change the name of the exports. You can export when you are constructing variables, classes, etc. or export them later.
+
+You can export things from other modules, including default values:
+
+```JavaScript
+export { default } from './module.js';
+```
+
+In this way, I have exported the default export from another module inside my module. This can be useful when you are trying to build one big module that is binding all the other modules.
+
+
+#### ```Import```
+
+You can import the exported things using ```import```. Just like with ```export```, you can import default values, you can change the name of the things that you are trying to import, you can import everything ( ```*``` ) under a certain name, etc.
+
+This is the syntax for ```import```:
+
+```JavaScript
+import defaultExport from "module-name";
+import * as name from "module-name";
+import { export1 } from "module-name";
+import { export1 as alias1 } from "module-name";
+import { export1 , export2 } from "module-name";
+import { export1 , export2 as alias2 , [...] } from "module-name";
+import defaultExport, { export1 [ , [...] ] } from "module-name";
+import defaultExport, * as name from "module-name";
+import "module-name";
+var promise = import("module-name");
+```
+
+When you are importing default values, you can change the name of those values without using ```as```:
+
+```JavaScript
+import SomeClass from './module.js';
+// inside module.js: export default class User { ... }
+
+const user = new SomeClass('nameTest', 18);
+```
+
+You can also import everything under a certain name, so you will have a namespace:
+
+```JavaScript
+import * as namespace from './module.js';
+
+console.log(namespace.a);
+console.log(namespace.b);
+```
